@@ -37,7 +37,7 @@ Current_Status:   "Scaling Aegis Latent Core for Enterprise B2B/B2G Deployment"
 
 ### 🏛️ EXECUTIVE SUMMARY: THE ENGINEERING MANIFESTO
 
-I am a **Systems Engineer and Applied Cryptographer** operating at the intersection of low-level software hardening, deterministic persistence, and post-quantum security protocols. 
+I am a **AI Technician and Applied Cryptographer** operating at the intersection of low-level software hardening, deterministic persistence, and post-quantum security protocols. 
 
 As the AI market matures into the strict regulatory environment of 2026, the industry faces a critical deficit: the inability to mathematically prove what an LLM received and generated. I do not build superficial API wrappers. I engineer the rigid, zero-trust intermediate infrastructure that enterprise and government systems require to operate securely under hostile conditions and strict compliance audits.
 
