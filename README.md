@@ -205,17 +205,17 @@ CI on every commit** — the benchmark job fails the build if a regression drops
 ## 📊 GitHub, in numbers that update themselves
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=JuanLunaIA&show_icons=true&theme=tokyonight&bg_color=0D1117&title_color=00F0FF&icon_color=A55CFF&text_color=C9D1D9&border_color=30363D&hide_border=false" alt="GitHub Stats" width="49%" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=JuanLunaIA&layout=compact&theme=tokyonight&bg_color=0D1117&title_color=00F0FF&icon_color=A55CFF&text_color=C9D1D9&border_color=30363D&hide_border=false&langs_count=8" alt="Top Languages" width="42%" />
-</p>
-<p align="center">
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=JuanLunaIA&theme=tokyonight&background=0D1117&ring=00F0FF&fire=A55CFF&currStreakLabel=00F0FF&sideNums=C9D1D9&sideLabels=C9D1D9&border=30363D&hide_border=false" alt="Streak Stats" width="97%" />
 </p>
 <p align="center">
-  <img src="https://github-profile-trophy.vercel.app/?username=JuanLunaIA&theme=algolia&no-frame=true&no-bg=true&column=7&margin-w=8&margin-h=8" alt="Trophies" width="97%" />
+  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2FJuanLunaIA&label=Public%20repos&query=%24.public_repos&style=for-the-badge&color=00F0FF&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Public repos" />
+  <img src="https://komarev.com/ghpvc/?username=JuanLunaIA&label=Profile%20views&style=for-the-badge&color=A55CFF&labelColor=0d1117" alt="Profile views" />
 </p>
 
-<sub>All four widgets query the GitHub API live — they reflect whatever is true right now, not a snapshot I typed in.</sub>
+<sub>Live queries against the GitHub API and this profile's real traffic — not a snapshot I typed in. (The usual
+stats-card/top-languages/trophy widgets from github-readme-stats.vercel.app are omitted: as of this write-up
+that shared instance returns <code>DEPLOYMENT_PAUSED</code> platform-wide — not specific to this profile. Worth
+adding back once that service is up again.)</sub>
 
 <br />
 
