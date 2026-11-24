@@ -1,244 +1,107 @@
-<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/header-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="assets/header-light.svg" />
+  <img alt="Juan Luna. Backend developer. Verifiable infrastructure for AI systems. Python, Rust, FastAPI, PostgreSQL, AWS." src="assets/header-light.svg" width="100%" />
+</picture>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&height=200&color=gradient&customColorList=0,2,4,6&text=Juan%20Luna&fontSize=64&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Building%20tamper-evident%20infrastructure%20for%20AI%20systems&descAlignY=58&descSize=20" width="100%" alt="Juan Luna" />
+# Juan Luna
 
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=24&duration=2600&pause=1100&color=00F0FF&center=true&vCenter=true&width=760&lines=Cryptographic+evidence+for+AI+%C2%B7+not+trust%2C+proof;Merkle+Mountain+Ranges+%C2%B7+Ed25519+%C2%B7+ML-DSA-65+(FIPS+204);Applied+topology+%C2%B7+persistent+homology+%C2%B7+category+theory;Open+source+%C2%B7+AGPLv3+%C2%B7+every+claim+ships+with+a+receipt" alt="Typing SVG" />
+**Backend developer (Python, Rust). I build verifiable infrastructure for AI systems: an evidence gateway for LLM calls and the SaaS control plane around it, developed with Claude Code, with every number tied to a command and a date.**
 
-<p>
-  <a href="https://github.com/JuanLunaIA?tab=followers">
-    <img src="https://img.shields.io/github/followers/JuanLunaIA?label=Followers&style=for-the-badge&color=00F0FF&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Followers" />
-  </a>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core">
-    <img src="https://img.shields.io/github/stars/JuanLunaIA/aegis-latent-core?label=Aegis%20Stars&style=for-the-badge&color=A55CFF&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Aegis Stars" />
-  </a>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core/forks">
-    <img src="https://img.shields.io/github/forks/JuanLunaIA/aegis-latent-core?label=Forks&style=for-the-badge&color=00F0FF&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Aegis Forks" />
-  </a>
-  <a href="mailto:juan.c.luna04@gmail.com">
-    <img src="https://img.shields.io/badge/Email-juan.c.luna04%40gmail.com-0d1117?style=for-the-badge&logo=gmail&logoColor=A55CFF&labelColor=0d1117" alt="Email" />
-  </a>
-</p>
+Rosario, Argentina. Open to remote roles. [Contact](#contact) · [aegislatent.com](https://aegislatent.com)
 
-</div>
+*Una línea en español:* desarrollador backend que construye y opera de punta a punta un producto de infraestructura para IA, con cada cifra respaldada por un comando y una fecha.
+
+## What I build
+
+I work on systems where **the interesting part is the proof, not the API call**: infrastructure that keeps being *checkable* when the person reading the evidence does not trust the person who produced it.
+
+I build and operate one product end to end: a gateway, a multi-tenant control plane, a multilingual website, a browser extension and the cloud infrastructure behind them. Nothing here is a slide. The public parts link to code you can read and measurements you can re-run; the private parts are described by capability, with their limits.
+
+## Flagship: aegis-latent-core
+
+[**aegis-latent-core**](https://github.com/JuanLunaIA/aegis-latent-core) is an OpenAI-compatible gateway (Python, FastAPI, asyncio, Rust core through PyO3) that sits between an application and an LLM provider. It applies policy to each request and records every governed call in a signed, hash-linked, append-only ledger. An outside party can check a disclosed record against a root they obtained independently, without trusting the gateway or the operator.
+
+- **Inclusion proofs.** Each record is a leaf in a Merkle Mountain Range, with `O(log n)` proofs for a disclosed leaf. A proof does not establish confidentiality, identity, time, custody or external anchoring.
+- **Offline verification.** A [313-line Python verifier](https://github.com/JuanLunaIA/aegis-latent-core/blob/main/sdk/python/src/aegis_sdk/proof.py) and a 295-line TypeScript twin validate proofs with no network call.
+- **Fail-closed.** In strict mode, a missing signer or a ledger that fails to replay means no service, never silent unevidenced traffic. Strict mode depends on how it is configured and deployed.
+- **Evidence signing.** HMAC-SHA256 by default; ML-DSA-65 (FIPS 204) where configured.
+- **Guardrails.** Two-layer WAF against prompt injection, PII/PHI redaction including SSE streams, red-team tests and fuzz campaigns. Aegis detects tampering; it does not prevent it.
+- **Boundaries in the open.** Public claims live in a [matrix of 131 claims](https://github.com/JuanLunaIA/aegis-latent-core/blob/main/docs/CLAIMS_MATRIX.md), each with a status and its limits, checked by a script. Regulatory frameworks are treated as technical input, not compliance: no certification is claimed.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/flow-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="assets/flow-light.svg" />
+  <img alt="Request flow: a caller sends a request to the Aegis gateway, which admits it, forwards it to the upstream LLM provider, then redacts, hashes, signs, appends to the WAL with fsync and adds an MMR leaf. The caller gets the response with evidence-status and proof headers." src="assets/flow-light.svg" width="100%" />
+</picture>
+
+*Diagram in words: the gateway admits or refuses a request, forwards it, then redacts, hashes, signs and durably commits the record to the ledger. For non-streaming responses the record is committed before the caller sees the response.*
+
+### Measured
+
+Baseline 5.0.1, run on 2026-09-24 on one shared 4-CPU container (CPython 3.11.15) with a real WAL `fsync` per commit. Method and raw record: [`docs/BENCHMARKS.md`](https://github.com/JuanLunaIA/aegis-latent-core/blob/main/docs/BENCHMARKS.md).
+
+| Measurement | Result | Scope |
+|---|---|---|
+| Evidence commit latency (n = 1,000) | p99 1.22 ms (p50 0.62 ms, p95 1.00 ms) | Merkle append, HMAC signature and one `fsync` per commit |
+| Commit throughput, 10 threads | 1,727 commits/s | One process, one WAL, one writer; does not scale with threads, by design |
+| Memory, 1,000 concurrent SSE streams | +20.1 MB RSS | In-process streams; excludes network sockets and durable-WAL cost |
+| Tests, `pytest -n auto -q` | 7,444 passed, 39 skipped, 0 failed; 91.30 % statement coverage | 5.0.1 tree, 2026-09-24; not re-run for 5.1.0 |
+
+These are measurements on one host, not capacity or production claims.
+
+### Release and license
+
+- **Latest published release: 5.1.0, on 2026-11-19.** Signed tag, GitHub Release with 31 assets, PyPI, npm and GHCR were read back that day. Sigstore/cosign signature checks were run for 5.0.1 and 5.0.3; they have not been run for 5.1.0.
+- **License:** the gateway is **source-available** under the Aegis Commercial License 1.0; the Python and TypeScript SDKs are Apache-2.0. It is self-hosted software.
+
+## The rest of Aegis (private repositories)
+
+These repositories are private, so they are described here by capability. I am glad to walk through them in a call or a screen share.
+
+- **Multi-tenant control plane.** FastAPI and PostgreSQL on AWS Lambda: organizations and roles, API keys, TOTP MFA, verified payment webhooks and idempotent usage metering.
+- **Website in 13 languages.** React 19 and TypeScript with server-side rendering and script-checked translation parity.
+- **Browser extension.** Manifest V3 for Chrome and Firefox. It seals AI-assistant conversations in a SHA-256 hash chain with a Merkle root, checks Ed25519-signed anchor receipts and ships an independent Node verifier.
+- **Infrastructure and operations.** Infrastructure as code (CloudFormation and Terraform), runbooks with rollback records, and one database point-in-time-restore exercise on 2026-11-18, verified with row counts. Recovery time and recovery point were not measured.
+
+## How I work: agentic development
+
+I develop with Claude Code and I say so. The repository versions **76 specialist agents**, each with a defined scope and the rules from `AGENTS.md`, and 201 of the gateway's 444 commits list Claude as author. What keeps that honest is verification, not authorship: public claims go through the claims matrix, a script checks it, and documentation changes go through their own gates. I treat this as an engineering method, and I keep its limits visible.
+
+## Sentinel
+
+[**Sentinel**](https://github.com/JuanLunaIA/Sentinel) is a non-custodial risk guardian for isolated-margin perpetual futures, written in Rust and built for a Monad hackathon. It runs against Monad testnet.
+
+- A deterministic risk engine measures distance to liquidation and cuts exposure in tiers with **reduce-only** orders.
+- An LLM-assisted layer only proposes; proposals pass a policy gate with caps, a market allowlist and human approval over Telegram.
+- Every decision goes into a hash-chained journal, with a Solidity anchor contract exercised on a local chain.
+- 952 tests in the code (static count); testnet only.
+
+## Smaller experiments
+
+- **topo-net-anomaly:** anomaly detection on network telemetry with persistent homology (Python).
+- **discopy-workflow:** compiles a JSON workflow DAG into a DisCoPy diagram to reduce peak memory (Python).
+
+## Stack
+
+| Area | Tools |
+|---|---|
+| Languages | Python, Rust, TypeScript |
+| Backend | FastAPI, asyncio, asyncpg, PostgreSQL, PyO3 |
+| Frontend | React 19, TanStack Start |
+| Cloud and infra | AWS (Lambda, RDS), CloudFormation, Terraform, Docker, GitHub Actions |
+| Security and crypto | Merkle trees, HMAC, Ed25519, ML-DSA-65, TOTP |
+| Verification | pytest, Hypothesis, Playwright, Lean 4, TLA+, Kani |
+
+## Contact
+
+- Email: [juan.c.luna04@gmail.com](mailto:juan.c.luna04@gmail.com)
+- LinkedIn: [linkedin.com/in/juanluna04](https://www.linkedin.com/in/juanluna04/)
+- Site: [aegislatent.com](https://aegislatent.com)
+- Status: open to remote roles.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/JuanLunaIA/JuanLunaIA/output/github-contribution-grid-snake-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/JuanLunaIA/JuanLunaIA/output/github-contribution-grid-snake.svg" />
-  <img alt="A snake eating my real contribution graph, one square at a time" src="https://raw.githubusercontent.com/JuanLunaIA/JuanLunaIA/output/github-contribution-grid-snake.svg" width="100%" />
+  <img alt="Animated snake eating my GitHub contribution graph, generated daily from my real contribution calendar" src="https://raw.githubusercontent.com/JuanLunaIA/JuanLunaIA/output/github-contribution-grid-snake.svg" width="100%" />
 </picture>
-
-<sub align="center">↑ generated once a day from my actual contribution calendar — <a href=".github/workflows/snake.yml">workflow</a>, not a drawing.</sub>
-
-<br /><br />
-
-```yaml
-identity:
-  name:      "Juan Luna"
-  handle:    "@JuanLunaIA"
-  role:      "Independent developer — AI security, cryptographic evidence, applied topology"
-  license:   ["AGPLv3", "Commercial", "MIT"]     # varies per project, see below
-  status:    "🟢 open to full-time roles, contract work, and technical collaboration"
-```
-
-Everything below links to a real, public repository with its own CI badge, test suite, and — where relevant — a
-benchmark you can re-run yourself. Nothing here is a slide; it's a table of contents to code that already runs.
-
----
-
-## What I build
-
-I design and ship systems where **the interesting part is the proof, not the API call**: infrastructure that has
-to keep working — and keep being *checkable* — when the person reading the evidence doesn't trust the person who
-produced it. That habit shows up in three places: a production-grade AI governance gateway, a topological
-anomaly detector held to a 147-test theorem-verification suite, and a program compiler whose one headline number
-is gated by CI on every commit.
-
-I write Python and Rust for anything that has to be correct under adversarial conditions, and TypeScript/React
-for the interfaces people actually use to see that correctness. I'd rather publish a real benchmark with its
-measurement methodology than a marketing number — every project below does exactly that.
-
-<br />
-
-## 🛡️ Flagship — Aegis Latent Core
-
-<table>
-<tr>
-<td width="60%" valign="top">
-
-**AI governance and cryptographic evidence gateway.** Aegis sits in front of any OpenAI-compatible LLM
-provider and commits a **signed, hash-linked record of every governed call — before the response is observable
-by the caller** — then issues a portable proof a third party can verify **without trusting the gateway, the
-vendor, or the operator who discloses the record.**
-
-- **Append-only evidence.** Every record is a leaf in a Merkle Mountain Range; a portable `O(log n)` inclusion
-  proof lets an outsider verify a disclosed record against a root they obtained independently.
-- **Real cryptography, not a demo.** HMAC by default, **Ed25519 (RFC 8032)** or **ML-DSA-65 (FIPS 204,
-  post-quantum)** where configured, with an HSM signing path in the enterprise build.
-- **Offline, zero-trust verification.** A 313-line pure-Python verifier and a TypeScript twin with identical
-  semantics — no network call, no dependency on Aegis itself being honest.
-- **Fail-closed.** No signer or a ledger that fails to replay means *no service* — never silent, unevidenced
-  traffic.
-- **Signed supply chain.** Releases are Sigstore-signed (`gitsign verify-tag`), container images pass
-  `cosign verify` with build-provenance attestations, and published artifacts re-hash to their own
-  `SHA256SUMS`.
-
-<sub>Regulatory framing (EU AI Act Art. 12, HIPAA, SEC 17a-4, MiFID II) is treated as **technical input, not
-compliance** — no certification exists or is claimed. That candor is enforced in CI, not just written down.</sub>
-
-</td>
-<td width="40%" valign="top">
-
-```
-caller ──► Aegis gateway ──► upstream LLM
-             │ auth · WAF
-             │ rate limits
-             │ (pass) forward
-             │ ◄── response ──
-             │ redact → hash
-             │ → sign → WAL
-             │ fsync → MMR leaf
-caller ◄── response
-     + X-Aegis-Evidence-Status
-     + X-Aegis-MMR-* proof
-```
-
-**Measured** (2026-09-24, one shared 4-vCPU
-container, reproducible via
-`scripts/run_benchmarks_5.0.1.py`):
-
-| Metric | Result |
-|---|---:|
-| Commit p99 | **1.22 ms** |
-| Commit p50 | 0.62 ms |
-| Throughput @10 threads | **1,727/s** |
-| +RSS @ 1,000 SSE streams | **20.1 MB** |
-| Test coverage | **91.30 %** |
-
-</td>
-</tr>
-</table>
-
-<p>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core"><img src="https://img.shields.io/badge/Repository-public-00F0FF?style=flat-square&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Repository" /></a>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core/actions/workflows/ci.yml"><img src="https://github.com/JuanLunaIA/aegis-latent-core/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core/actions/workflows/security.yml"><img src="https://github.com/JuanLunaIA/aegis-latent-core/actions/workflows/security.yml/badge.svg" alt="Security" /></a>
-  <a href="https://github.com/JuanLunaIA/aegis-latent-core/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPLv3%20or%20Commercial-A55CFF?style=flat-square&labelColor=0d1117" alt="License" /></a>
-  <a href="https://aegis-latent-core.vercel.app"><img src="https://img.shields.io/badge/Live_site-aegis--latent--core.vercel.app-00F0FF?style=flat-square&logo=vercel&logoColor=0d1117&labelColor=0d1117" alt="Live site" /></a>
-</p>
-
-<br />
-
-## 🔬 Research-grade side projects
-
-Both of these exist because I wanted to know if a theoretical result actually held up under test — so I built
-the harness that would prove me wrong if it didn't.
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### [topo-net-anomaly](https://github.com/JuanLunaIA/network-telemetry-topology)
-
-Topological anomaly detection for network telemetry: Takens delay-coordinate embedding → Vietoris–Rips
-persistent homology → Betti-number (β₀/β₁) preservation check across PCA/UMAP reduction → robust-z / LOF /
-Wasserstein ensemble detection.
-
-The test suite doesn't just check the code — it checks the **math**: β₀=1, β₁=1 on a noisy circle; β₀=1, β₁=2,
-β₂=1 on a torus; β₀=1, β₁=0, β₂=1 on a sphere. It also reports the one place theory predicts *failure*
-(PCA destroys loops) and confirms that failure empirically, instead of hiding it.
-
-- **147 / 147 tests passing** — unit, integration, property-based (Hypothesis), and theorem-verification
-- **100 % coverage**, `perf_counter_ns` timing at 59 ns median resolution
-- β₀ preservation under PCA: **100 %** · β₁ preservation: **0 %** (theory-confirmed, not a bug)
-
-<img src="https://img.shields.io/badge/tests-147%20passed-00F0FF?style=flat-square&labelColor=0d1117" alt="tests" />
-<img src="https://img.shields.io/badge/coverage-100%25-A55CFF?style=flat-square&labelColor=0d1117" alt="coverage" />
-<img src="https://img.shields.io/badge/TDA-giotto--tda-00F0FF?style=flat-square&labelColor=0d1117" alt="TDA" />
-
-</td>
-<td width="50%" valign="top">
-
-### [discopy-workflow](https://github.com/JuanLunaIA/discopy-workflow)
-
-A JSON workflow DAG, run through two backends: a naive re-walking runner (what most off-the-shelf DAG
-engines do), and a compiler that turns the workflow into a **DisCoPy Markov-category diagram**, then freezes
-it into a single Python closure — no per-node dicts, no JSON walks at execution time.
-
-The project's headline claim (**≥ 15 % less peak memory**) is asserted by the test suite and **enforced by
-CI on every commit** — the benchmark job fails the build if a regression drops below target.
-
-- **>99 % peak-memory reduction** measured via `tracemalloc` (target ≥ 15 %, CI-gated)
-- CI matrix across Python 3.10–3.13, plus macOS/Windows smoke tests
-- CLI + typed public API, ready for PyPI packaging
-
-<img src="https://img.shields.io/badge/CI--gated_benchmark-≥15%25_target-00F0FF?style=flat-square&labelColor=0d1117" alt="benchmark" />
-<img src="https://img.shields.io/badge/measured-%3E99%25_reduction-A55CFF?style=flat-square&labelColor=0d1117" alt="measured" />
-<img src="https://img.shields.io/badge/license-MIT-00F0FF?style=flat-square&labelColor=0d1117" alt="MIT" />
-
-</td>
-</tr>
-</table>
-
-<br />
-
-## ⚙️ Stack
-
-<p>
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-</p>
-<p>
-  <img src="https://img.shields.io/badge/Cryptography-Ed25519_%7C_ML--DSA--65-A55CFF?style=for-the-badge&logoColor=white" alt="Cryptography" />
-  <img src="https://img.shields.io/badge/Merkle_Trees-00F0FF?style=for-the-badge&logoColor=white" alt="Merkle Trees" />
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
-  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions" />
-  <img src="https://img.shields.io/badge/pytest-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white" alt="pytest" />
-  <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" alt="Git" />
-</p>
-
-<br />
-
-## 📊 GitHub, in numbers that update themselves
-
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=JuanLunaIA&theme=tokyonight&background=0D1117&ring=00F0FF&fire=A55CFF&currStreakLabel=00F0FF&sideNums=C9D1D9&sideLabels=C9D1D9&border=30363D&hide_border=false" alt="Streak Stats" width="97%" />
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Fusers%2FJuanLunaIA&label=Public%20repos&query=%24.public_repos&style=for-the-badge&color=00F0FF&logo=github&logoColor=0d1117&labelColor=0d1117" alt="Public repos" />
-  <img src="https://komarev.com/ghpvc/?username=JuanLunaIA&label=Profile%20views&style=for-the-badge&color=A55CFF&labelColor=0d1117" alt="Profile views" />
-</p>
-
-<sub>Live queries against the GitHub API and this profile's real traffic — not a snapshot I typed in. (The usual
-stats-card/top-languages/trophy widgets from github-readme-stats.vercel.app are omitted: as of this write-up
-that shared instance returns <code>DEPLOYMENT_PAUSED</code> platform-wide — not specific to this profile. Worth
-adding back once that service is up again.)</sub>
-
-<br />
-
-## 🧭 Right now
-
-```text
-🔭 Currently building   Aegis Latent Core v5.x — enterprise hardening & SDK surface
-🔬 Currently exploring  persistent homology for streaming telemetry, categorical compilers
-💬 Ask me about         cryptographic audit trails, fail-closed system design, Merkle proofs
-🟢 Open to              full-time roles · contract work · technical due-diligence reviews
-📫 Reach me at          juan.c.luna04@gmail.com
-```
-
-<br />
-
-<div align="center">
-
-[![Email](https://img.shields.io/badge/Email-juan.c.luna04%40gmail.com-0d1117?style=for-the-badge&logo=gmail&logoColor=A55CFF&labelColor=0d1117)](mailto:juan.c.luna04@gmail.com)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Juan_Luna-0d1117?style=for-the-badge&logo=linkedin&logoColor=00F0FF&labelColor=0d1117)](https://www.linkedin.com/in/juanluna04/)
-[![Aegis Latent Core](https://img.shields.io/badge/Flagship-Aegis_Latent_Core-0d1117?style=for-the-badge&logoColor=A55CFF&labelColor=0d1117)](https://github.com/JuanLunaIA/aegis-latent-core)
-
-<sub>© 2026 Juan Luna · sole copyright holder & maintainer of Aegis Latent Core (see <a href="https://github.com/JuanLunaIA/aegis-latent-core/blob/main/AUTHORS">AUTHORS</a>)</sub>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&height=100&color=gradient&customColorList=6,4,2,0&section=footer&animation=fadeIn" width="100%" alt="" />
-
-</div>
