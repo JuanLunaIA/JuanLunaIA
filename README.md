@@ -79,8 +79,8 @@ I develop with Claude Code and I say so. The repository versions **76 specialist
 
 ## Smaller experiments
 
-- **topo-net-anomaly:** anomaly detection on network telemetry with persistent homology (Python).
-- **discopy-workflow:** compiles a JSON workflow DAG into a DisCoPy diagram to reduce peak memory (Python).
+- [**topo-net-anomaly**](https://github.com/JuanLunaIA/network-telemetry-topology): anomaly detection on network telemetry with persistent homology (Python).
+- [**discopy-workflow**](https://github.com/JuanLunaIA/discopy-workflow): compiles a JSON workflow DAG into a DisCoPy diagram to reduce peak memory (Python).
 
 ## Stack
 
