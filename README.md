@@ -6,11 +6,11 @@
 
 # Juan Luna
 
-**Backend developer (Python, Rust). I build verifiable infrastructure for AI systems: an evidence gateway for LLM calls and the SaaS control plane around it, developed with Claude Code, with every number tied to a command and a date.**
+**Backend developer (Python, Rust). I build verifiable infrastructure for AI systems: an evidence gateway for LLM calls and the SaaS control plane around it, developed with Claude Code. Measurements below carry their date and environment.**
 
 Rosario, Argentina. Open to remote roles. [Contact](#contact) · [aegislatent.com](https://aegislatent.com)
 
-*Una línea en español:* desarrollador backend que construye y opera de punta a punta un producto de infraestructura para IA, con cada cifra respaldada por un comando y una fecha.
+*Una línea en español:* desarrollador backend que construye y opera de punta a punta un producto de infraestructura para IA, con mediciones fechadas y límites declarados.
 
 ## What I build
 
@@ -32,7 +32,7 @@ I build and operate one product end to end: a gateway, a multi-tenant control pl
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/flow-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="assets/flow-light.svg" />
-  <img alt="Request flow: a caller sends a request to the Aegis gateway, which admits it, forwards it to the upstream LLM provider, then redacts, hashes, signs, appends to the WAL with fsync and adds an MMR leaf. The caller gets the response with evidence-status and proof headers." src="assets/flow-light.svg" width="100%" />
+  <img alt="Request flow: a caller sends a request to the Aegis gateway, which admits it, forwards it to the upstream LLM provider, then redacts, hashes, signs, appends to the WAL with fsync and adds an MMR leaf. For non-streaming responses this commit happens before the caller gets the response with evidence-status and proof headers." src="assets/flow-light.svg" width="100%" />
 </picture>
 
 *Diagram in words: the gateway admits or refuses a request, forwards it, then redacts, hashes, signs and durably commits the record to the ledger. For non-streaming responses the record is committed before the caller sees the response.*
@@ -66,7 +66,7 @@ These repositories are private, so they are described here by capability. I am g
 
 ## How I work: agentic development
 
-I develop with Claude Code and I say so. The repository versions **76 specialist agents**, each with a defined scope and the rules from `AGENTS.md`, and 201 of the gateway's 444 commits list Claude as author. What keeps that honest is verification, not authorship: public claims go through the claims matrix, a script checks it, and documentation changes go through their own gates. I treat this as an engineering method, and I keep its limits visible.
+I develop with Claude Code and I say so. The repository versions **76 specialist agents**, each with a defined scope and the rules from `AGENTS.md`, and 201 of the gateway's 444 commits list Claude as author (counts from `git` on 2026-11-24). What keeps that honest is verification, not authorship: public claims go through the claims matrix, a script checks it, and documentation changes go through their own gates. I treat this as an engineering method, and I keep its limits visible.
 
 ## Sentinel
 
@@ -75,7 +75,7 @@ I develop with Claude Code and I say so. The repository versions **76 specialist
 - A deterministic risk engine measures distance to liquidation and cuts exposure in tiers with **reduce-only** orders.
 - An LLM-assisted layer only proposes; proposals pass a policy gate with caps, a market allowlist and human approval over Telegram.
 - Every decision goes into a hash-chained journal, with a Solidity anchor contract exercised on a local chain.
-- 952 tests in the code (static count); testnet only.
+- 952 `#[test]` functions in the code (static count, 2026-11-24); testnet only.
 
 ## Smaller experiments
 
